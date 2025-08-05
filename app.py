@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, send_from_directory
 import base64
 import numpy as np
 import cv2
+import imutils
+import  easyocr
 
 
 
@@ -27,9 +29,40 @@ def process_image():
         if image_np is None:
             return jsonify({'staus':'error','message':'Image decode failed!'}), 400
         
-        # --- We'll add edge detection and returning image in next step ---
-        return jsonify({'status':'success','message':'Image received!'}), 200
         
+        #object detection begins
+        gray = cv2.cvtColor(image_np, cv2.COLOR_BGR2GRAY)
+        bfilter = cv2.bilateralFilter(gray, 11, 17, 17)
+        edge = cv2.Canny(bfilter, 30, 200)
+        keypoints = cv2.findContours(edge.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours = imutils.grab_contours(keypoints)
+        contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
+
+        location = None
+        for contour in contours:
+            approx = cv2.approxPolyDP(contour, 10, True)
+            if len(approx) == 4:
+                location = approx
+                break
+
+        if location is not None:
+            mask = np.zeros(gray.shape, np.uint8)
+            newImage = cv2.drawContours(mask, [location], 0, 255, -1)
+            newImage = cv2.bitwise_and(image_np, image_np, mask=mask)
+            (x, y) = np.where(mask == 255)
+            (x1, y1) = (np.min(x), np.min(y))
+            (x2, y2) = (np.max(x), np.max(y))
+            cropped_image = gray[x1: x2+1, y1:y2+1]
+
+            reader = easyocr.Reader(['en'], gpu=False)
+            result = reader.readtext(cropped_image)
+            # Optionally, extract only the text parts:
+            text_results = [res[1] for res in result]
+            return jsonify({'status':'success','results': text_results}), 200
+        else:
+            return jsonify({'status':'error', 'message':'No license plate contour found'}), 200   
+        # --- End Object Detection and OCR ---
+
     except Exception as e:
         return jsonify({'status':'error', 'message': str(e)}), 500
 
