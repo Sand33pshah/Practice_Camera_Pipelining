@@ -1,3 +1,5 @@
+console.log("Script Loaded!")
+
 const startCameraButton = document.getElementById('startCameraButton');
 const stopCameraButton = document.getElementById('stopCameraButton');
 const captureButton = document.getElementById('captureButton');
@@ -42,5 +44,25 @@ captureButton.addEventListener('click', () => {
         capturedCanvas.height = videoFeed.videoHeight;
         ctx.drawImage(videoFeed, 0, 0, capturedCanvas.width, capturedCanvas.height);
         capturedCanvas.style.display = 'block';
+
+        // --- convert canvas to base64 and send to backend ---
+        const imageDataUrl = capturedCanvas.toDataURL('image/jpeg', 0.9);
+
+        fetch('/process_image', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: imageDataUrl })
+        })
+        .then(response => response.json())
+        .then(data => {
+            //We'll handle display the result later!
+            alert('Processing done! Check console for backend response.');
+            console.log('Backend response:', data);
+        })
+        .catch(err => {
+            alert('Error sending image to server: ' + err.message)
+        });
     }
-})
+});
