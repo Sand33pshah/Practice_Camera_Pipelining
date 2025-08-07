@@ -5,9 +5,6 @@ import cv2
 import imutils
 import  easyocr
 
-
-
-
 app = Flask(__name__)
 
 @app.route('/')
