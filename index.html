@@ -4,13 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chandigarh Police</title>
-    
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body>
     <div>
         <button id="startCameraButton">Activate Camera</button>
-        <button id="stopCameraButton">Stop Camera</button>
-        <button id="captureButton">Capture Frame</button>
+        <button id="stopCameraButton" disabled>Stop Camera</button>
+        <button id="captureButton" disabled>Capture Frame</button>
+    </div>
+    <div id="resultsContainer">
+        <h2>Detected Text:</h2>
+        <pre id="resultText"></pre>
     </div>
     <div>
         <video id="videoFeed" width="400" autoplay playsinline></video>

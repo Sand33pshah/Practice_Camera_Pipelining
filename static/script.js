@@ -6,26 +6,29 @@ const captureButton = document.getElementById('captureButton');
 const videoFeed = document.getElementById('videoFeed');
 const capturedCanvas = document.getElementById('capturedCanvas');
 const ctx = capturedCanvas.getContext('2d');
+const resultTextElement = document.getElementById('resultText');
+
+
 
 let stream = null;
 
 //start camera
 startCameraButton.addEventListener('click', async () => {
-    try{
-        stream = await navigator.mediaDevices.getUserMedia({ video: true});
+    try {
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
         videoFeed.srcObject = stream;
         startCameraButton.disabled = true;
         stopCameraButton.disabled = false;
-        captureButton.disabled = false
+        captureButton.disabled = false;
     }
-    catch(err){
-        alert('Could not access the camera: '+ err.message);
+    catch (err) {
+        alert('Could not access the camera: ' + err.message);
     }
 });
 
 //stop the video feed
 stopCameraButton.addEventListener('click', () => {
-    if(stream){
+    if (stream) {
         stream.getTracks().forEach(track => track.stop());
         videoFeed.srcObject = null;
         stream = null;
@@ -39,7 +42,7 @@ stopCameraButton.addEventListener('click', () => {
 
 //capture the frame out of video feed
 captureButton.addEventListener('click', () => {
-    if(videoFeed.readyState === videoFeed.HAVE_ENOUGH_DATA) {
+    if (videoFeed.readyState === videoFeed.HAVE_ENOUGH_DATA) {
         capturedCanvas.width = videoFeed.videoWidth;
         capturedCanvas.height = videoFeed.videoHeight;
         ctx.drawImage(videoFeed, 0, 0, capturedCanvas.width, capturedCanvas.height);
@@ -55,14 +58,27 @@ captureButton.addEventListener('click', () => {
             },
             body: JSON.stringify({ image: imageDataUrl })
         })
-        .then(response => response.json())
-        .then(data => {
-            //We'll handle display the result later!
-            alert('Processing done! Check console for backend response.');
-            console.log('Backend response:', data);
-        })
-        .catch(err => {
-            alert('Error sending image to server: ' + err.message)
-        });
+
+            .then(response => response.json())
+            .then(data => {
+                // Check if the server's response was a success
+                // console.log('Backend response:', data);
+                if (data.status === 'success') {
+                    // The server sent an array of results. Join them for display.
+                    const results = data.results.join(', ');
+                    resultTextElement.textContent = results;
+                    alert('Processing done! Results displayed below.');
+                } else {
+                    // Handle the case where the server returned an error
+                    resultTextElement.textContent = `Error: ${data.message}`;
+                    alert('Processing failed: ' + data.message);
+                }
+                console.log('Backend response:', data);
+            })
+            .catch(err => {
+                resultTextElement.textContent = 'Error sending image to server.';
+                alert('Error sending image to server: ' + err.message);
+                console.error(err);
+            });
     }
 });

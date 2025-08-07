@@ -1,0 +1,97 @@
+/* General website improvements for better look */
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f7f8fa;
+    margin: 0;
+    padding: 0;
+    color: #222;
+}
+
+header,
+footer {
+    background: #253858;
+    color: #fff;
+    padding: 1.5rem 0;
+    text-align: center;
+}
+
+main {
+    max-width: 1000px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);
+    padding: 2rem;
+}
+
+h1,
+h2,
+h3 {
+    color: #253858;
+    margin-top: 0;
+}
+
+a {
+    color: #1976d2;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Make canvas more visible and attractive */
+canvas {
+    display: block;
+    margin: 2rem auto;
+    background: #fafafa;
+    border: 3px solid #253858;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(37, 56, 88, 0.18), 0 1.5px 6px rgba(37, 56, 88, 0.12);
+    transition: box-shadow 0.2s;
+    max-width: 100%;
+}
+
+canvas:focus,
+canvas:hover {
+    box-shadow: 0 12px 36px rgba(25, 118, 210, 0.30), 0 2px 12px rgba(25, 118, 210, 0.16);
+    outline: none;
+}
+
+/* Button styles as suggestion */
+button{
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7em 2em;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0.5em 0;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #1565c0;
+}
+
+button:disabled {
+  background-color: #e9ecef; /* A light gray background */
+  color: #6c757d;           /* A darker gray text color */
+  border-color: #6c757d;
+  cursor: not-allowed;      /* Change the cursor to a 'not allowed' symbol */
+}
+
+/* Responsive improvement */
+@media (max-width: 600px) {
+    main {
+        padding: 1rem;
+        border-radius: 0;
+    }
+
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+        border-radius: 8px;
+    }
+}
