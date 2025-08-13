@@ -44,11 +44,13 @@ def process_image():
 
         if location is not None:
             mask = np.zeros(gray.shape, np.uint8)
-            newImage = cv2.drawContours(mask, [location], 0, 255, -1)
-            newImage = cv2.bitwise_and(image_np, image_np, mask=mask)
+            # newImage = cv2.drawContours(mask, [location], 0, 255, -1)
+            # newImage = cv2.bitwise_and(image_np, image_np, mask=mask)
+            
             (x, y) = np.where(mask == 255)
             (x1, y1) = (np.min(x), np.min(y))
             (x2, y2) = (np.max(x), np.max(y))
+            
             cropped_image = gray[x1: x2+1, y1:y2+1]
 
             reader = easyocr.Reader(['en'], gpu=False)
