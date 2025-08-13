@@ -13,18 +13,60 @@ const resultTextElement = document.getElementById('resultText');
 let stream = null;
 
 //start camera
+// startCameraButton.addEventListener('click', async () => {
+//     navigator.mediaDevices.enumerateDevices()
+//         .then(devices => {
+//             devices.forEach(device => {
+//                 console.log(device.kind, device.label, device.deviceId);
+//             });
+//         });
+//     try {
+//         stream = await navigator.mediaDevices.getUserMedia({
+//             video: { deviceId: { exact: device.deviceId } }
+//         });
+//         videoFeed.srcObject = stream;
+//         startCameraButton.disabled = true;
+//         stopCameraButton.disabled = false;
+//         captureButton.disabled = false;
+//     }
+//     catch (err) {
+//         alert('Could not access the camera: ' + err.message);
+//     }
+// });
+
+
 startCameraButton.addEventListener('click', async () => {
     try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        // First get the list of devices
+        const devices = await navigator.mediaDevices.enumerateDevices();
+
+        // Find the Redmi K20 Pro camera
+        const phoneCamera = devices.find(device =>
+            device.kind === 'videoinput' &&
+            device.label.includes('Redmi K20 Pro')
+        );
+
+        if (!phoneCamera) {
+            alert('Phone camera not found!');
+            return;
+        }
+
+        // Now start the stream from that device
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: { deviceId: { exact: phoneCamera.deviceId } }
+        });
+
         videoFeed.srcObject = stream;
         startCameraButton.disabled = true;
         stopCameraButton.disabled = false;
         captureButton.disabled = false;
-    }
-    catch (err) {
+
+    } catch (err) {
         alert('Could not access the camera: ' + err.message);
+        console.error(err);
     }
 });
+
 
 //stop the video feed
 stopCameraButton.addEventListener('click', () => {
