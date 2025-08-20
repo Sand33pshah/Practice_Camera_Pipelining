@@ -46,14 +46,23 @@ startCameraButton.addEventListener('click', async () => {
             device.label.includes('Redmi K20 Pro')
         );
 
-        if (!phoneCamera) {
-            alert('Phone camera not found!');
-            return;
+        let cameraToUSe = phoneCamera;
+        // If the specific phone camera is not found, you can choose another one
+        if (!cameraToUSe) {
+            cameraToUSe = devices.find(device => device.kind === 'videoinput');
+            // If no camera is found, alert the user
+            if (!cameraToUSe) {
+                alert('No camera found!');
+                return;
+            }
+            else {
+                alert('Redmi K20 Pro camera not found, using the first available camera instead.');
+            }
         }
 
         // Now start the stream from that device
         stream = await navigator.mediaDevices.getUserMedia({
-            video: { deviceId: { exact: phoneCamera.deviceId } }
+            video: { deviceId: { exact: cameraToUSe.deviceId } }
         });
 
         videoFeed.srcObject = stream;
