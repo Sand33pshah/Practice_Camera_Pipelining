@@ -1,25 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chandigarh Police</title>
+    <title>VINOD</title>
     <link rel="stylesheet" href="static/style.css">
 </head>
+
 <body>
-    <div>
-        <button id="startCameraButton">Activate Camera</button>
-        <button id="stopCameraButton" disabled>Stop Camera</button>
-        <button id="captureButton" disabled>Capture Frame</button>
-    </div>
-    <div id="resultsContainer">
-        <h2>Detected Text:</h2>
-        <pre id="resultText"></pre>
-    </div>
-    <div>
-        <video id="videoFeed" width="400" autoplay playsinline></video>
-        <canvas id="capturedCanvas" width="400" height="300" style="display: none;"></canvas>
-    </div>
+    <header>
+        <h1>VINOD</h1>
+    </header>
+    <main>
+        <div class="button-container">
+            <button id="startCameraButton">Activate Camera</button>
+            <button id="stopCameraButton" disabled>Stop Camera</button>
+            <button id="captureButton" disabled>Capture Frame</button>
+        </div>
+        <div id="resultsContainer">
+            <p>
+                <span class="label">Detected Text:</span>
+                <span id="resultText"></span>
+            </p>
+        </div>
+        <div class="canvas-video-container">
+            <video id="videoFeed" autoplay playsinline></video>
+            <canvas id="capturedCanvas" style="display: none;"></canvas>
+        </div>
+    </main>
+    <footer>
+        <p>VINOD: Vehcile Ineligible Now: Official Detection</p>
+        <p>Since: Aug 2025</p>
+    </footer>
     <script src="static/script.js"></script>
 </body>
+
 </html>

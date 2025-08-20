@@ -5,29 +5,48 @@ body {
     margin: 0;
     padding: 0;
     color: #222;
+    display: flex;
+    /* Makes the body a flex container */
+    flex-direction: column;
+    /* Stacks children vertically */
+    min-height: 100vh;
+    /* Ensures the body fills the entire viewport height */
 }
 
 header,
 footer {
     background: #253858;
     color: #fff;
-    padding: 1.5rem 0;
+    padding: 0.1rem 0;
     text-align: center;
+    flex-shrink: 0;
+    /* Prevents header/footer from shrinking */
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.9rem;
 }
 
 main {
-    max-width: 1000px;
+    flex-grow: 1;
+    /* Allows the main content to take up available space */
+    width: 95%;
     margin: 2rem auto;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07), 0 1.5px 4px rgba(0, 0, 0, 0.04);
     padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Centers children horizontally within the main container */
 }
 
 h1,
 h2,
 h3 {
-    color: #253858;
+    color: #ffffff;
     margin-top: 0;
 }
 
@@ -40,16 +59,31 @@ a:hover {
     text-decoration: underline;
 }
 
-/* Make canvas more visible and attractive */
-canvas {
-    display: block;
-    margin: 2rem auto;
-    background: #fafafa;
+/* New button container to center the buttons */
+.button-container {
+    width: 100%;
+    text-align: center;
+    /* Centers inline-block elements */
+    margin-bottom: 2rem;
+}
+
+/* Make canvas and video more visible and attractive */
+.canvas-video-container {
+    width: 100%;
+    display: flex; /* Establishes a flex container */
+    justify-content: center; /* Centers items horizontally in the container */
+    align-items: flex-start; /* Aligns items to the top of the container */
+    gap: 20px; /* Adds space between the video and canvas */
+}
+
+#videoFeed,
+#capturedCanvas {
+    width: auto; /* Each item takes up 50% of the container's width */
+    height: auto; /* Maintains the original aspect ratio */
     border: 3px solid #253858;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(37, 56, 88, 0.18), 0 1.5px 6px rgba(37, 56, 88, 0.12);
     transition: box-shadow 0.2s;
-    max-width: 100%;
 }
 
 canvas:focus,
@@ -59,7 +93,7 @@ canvas:hover {
 }
 
 /* Button styles as suggestion */
-button{
+button {
     background: #1976d2;
     color: #fff;
     border: none;
@@ -67,7 +101,8 @@ button{
     padding: 0.7em 2em;
     font-size: 1rem;
     cursor: pointer;
-    margin: 0.5em 0;
+    margin: 0 0.5em;
+    /* Adjusted margin to prevent button stacking on smaller screens */
     transition: background 0.2s;
 }
 
@@ -76,10 +111,30 @@ button:hover {
 }
 
 button:disabled {
-  background-color: #e9ecef; /* A light gray background */
-  color: #6c757d;           /* A darker gray text color */
-  border-color: #6c757d;
-  cursor: not-allowed;      /* Change the cursor to a 'not allowed' symbol */
+    background-color: #e9ecef;
+    /* A light gray background */
+    color: #6c757d;
+    /* A darker gray text color */
+    border-color: #6c757d;
+    cursor: not-allowed;
+    /* Change the cursor to a 'not allowed' symbol */
+}
+
+#resultsContainer {
+    width: auto;
+    text-align: center;
+}
+
+#resultsContainer p {
+    color: #1565c0;
+    font-size: 1.5rem; /* Adjust font size as needed */
+    font-weight: bold; /* Make the label bold to stand out */
+}
+
+#resultText {
+    font-weight: normal; /* Make the result text non-bold */
+    margin-left: 0.5em; /* Add a small space between the label and the result */
+    white-space: pre-wrap; /* This will preserve formatting from the original <pre> */
 }
 
 /* Responsive improvement */
