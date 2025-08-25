@@ -4,6 +4,9 @@ import numpy as np
 import cv2
 import imutils
 import easyocr
+import re
+import requests
+import json
 
 app = Flask(__name__)
 
@@ -11,6 +14,41 @@ app = Flask(__name__)
 @app.route('/')
 def serve_index():
     return send_from_directory('.', 'index.html')
+
+#New API Call Function
+def get_User_Info(license_plate_texts):
+    cleaned_text = re.sub(r'[^a-zA-Z0-9]', '', license_plate_texts[0])
+    license_plate = cleaned_text.upper()
+    print("Cleaned License Plate:", license_plate)
+    
+    #API Details
+    api_url = f"http://127.0.0.1:5001/api/vehicles/{license_plate}"  
+    api_key = "your_secret_api_key_here"
+    
+    headers = {
+        "x-api-key": api_key
+    }
+    
+    try:
+        response = requests.get(api_url, headers=headers)
+        
+        if response.status_code == 200:
+            vehicle_data =  response.json()
+            print("Vehicle Data:", vehicle_data)
+            Owner_Name = vehicle_data.get("owner_name", "N/A")
+            Vehicle_Model = vehicle_data.get("make_model", "N/A")
+            Registration_Year = vehicle_data.get("registration_date", "N/A")
+            
+            print(f"Owner: {Owner_Name}, Model: {Vehicle_Model}, Year: {Registration_Year}")
+        elif response.status_code == 404:
+            print("Vehicle not found in the database.")
+        else:
+            print(f"API Error: {response.status_code} - {response.text}")
+        
+    except requests.exceptions.RequestException as e:
+        return {"error": "API request failed: " + str(e)}  
+    
+    return f"Hello, {license_plate}!"
 
 
 @app.route('/process_image', methods=['POST'])
@@ -59,6 +97,17 @@ def process_image():
             result = reader.readtext(cropped_image)
             # Optionally, extract only the text parts:
             text_results = [res[1] for res in result]
+            print("Detected Text:", result)
+            print("Detected license plate Text Extract:", text_results)
+            
+            
+            #Calling API
+            user_info = get_User_Info(text_results)
+            print("User Info:", user_info)
+            
+            
+            
+            
             return jsonify({'status': 'success', 'results': text_results}), 200
         else:
             return jsonify({'status': 'error', 'message': 'No license plate contour found'}), 200
