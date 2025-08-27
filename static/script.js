@@ -6,7 +6,13 @@ const captureButton = document.getElementById('captureButton');
 const videoFeed = document.getElementById('videoFeed');
 const capturedCanvas = document.getElementById('capturedCanvas');
 const ctx = capturedCanvas.getContext('2d');
-const resultTextElement = document.getElementById('resultText');
+
+
+const detectedTextElement = document.getElementById('detectedText');
+const licensePlateElement = document.getElementById('licencePlate');
+const ownerNameElement = document.getElementById('ownerName');
+const vehicleModelElement = document.getElementById('vehicleModel');
+const registrationYearElement = document.getElementById('registrationYear');
 
 
 
@@ -113,21 +119,44 @@ captureButton.addEventListener('click', () => {
             .then(response => response.json())
             .then(data => {
                 // Check if the server's response was a success
-                // console.log('Backend response:', data);
+                console.log('Backend response:', data);
                 if (data.status === 'success') {
-                    // The server sent an array of results. Join them for display.
-                    const results = data.results.join(', ');
-                    resultTextElement.textContent = results;
+                    // Display the results in the HTML
+                    if (Array.isArray(data.results) && data.results.length > 0) {
+                        detectedTextElement.textContent = data.results.join(', ');
+                    } else {
+                        detectedTextElement.textContent = 'No license plate text detected.';
+                }
+
+                    if (data.user_info && data.user_info.found) {
+                        licensePlateElement.textContent = data.user_info.license_plate || 'N/A';
+                        ownerNameElement.textContent = data.user_info.owner_name || 'N/A';
+                        vehicleModelElement.textContent = data.user_info.vehicle_model || 'N/A';
+                        registrationYearElement.textContent = data.user_info.registration_year || 'N/A';
+                    } else {
+                        licensePlateElement.textContent = 'N/A';
+                        ownerNameElement.textContent = 'N/A';
+                        vehicleModelElement.textContent = 'N/A';
+                        registrationYearElement.textContent = 'N/A';
+                    }
                     alert('Processing done! Results displayed below.');
                 } else {
                     // Handle the case where the server returned an error
-                    resultTextElement.textContent = `Error: ${data.message}`;
+                    detectedTextElement.textContent = `Error: ${data.message}`;
+                    licensePlateElement.textContent = 'N/A';
+                    ownerNameElement.textContent = 'N/A';
+                    vehicleModelElement.textContent = 'N/A';
+                    registrationYearElement.textContent = 'N/A';
                     alert('Processing failed: ' + data.message);
                 }
                 console.log('Backend response:', data);
             })
             .catch(err => {
-                resultTextElement.textContent = 'Error sending image to server.';
+                detectedTextElement.textContent = 'Error sending image to server.';
+                licensePlateElement.textContent = 'N/A';
+                ownerNameElement.textContent = 'N/A';
+                vehicleModelElement.textContent = 'N/A';
+                registrationYearElement.textContent = 'N/A';
                 alert('Error sending image to server: ' + err.message);
                 console.error(err);
             });
