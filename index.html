@@ -19,10 +19,32 @@
             <button id="captureButton" disabled>Capture Frame</button>
         </div>
         <div id="resultsContainer">
-            <p>
+            <div>
+                <p>
                 <span class="label">Detected Text:</span>
-                <span id="resultText"></span>
-            </p>
+                <span id="detectedText"></span>
+                </p>
+            </div>
+            <div>
+                <p>
+                <span class="label">Licence Plate:</span>
+                <span id="licencePlate"></span>
+                </p>
+                <p>
+                <span class="label">Owner Name:</span>
+                <span id="ownerName"></span>
+                </p>
+            </div>
+            <div>
+                <p>
+                <span class="label">Vechicle Model:</span>
+                <span id="vehicleModel"></span>
+                </p>
+                <p>
+                <span class="label">Registration Year:</span>
+                <span id="registrationYear"></span>
+                </p>
+            </div>
         </div>
         <div class="canvas-video-container">
             <video id="videoFeed" autoplay playsinline></video>
