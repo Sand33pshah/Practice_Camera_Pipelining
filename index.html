@@ -19,13 +19,13 @@
             <button id="captureButton" disabled>Capture Frame</button>
         </div>
         <div id="resultsContainer">
-            <div>
+            <div class="innerContainer" id="detectionResults">
                 <p>
                 <span class="label">Detected Text:</span>
                 <span id="detectedText"></span>
                 </p>
             </div>
-            <div>
+            <div class="innerContainer">
                 <p>
                 <span class="label">Licence Plate:</span>
                 <span id="licencePlate"></span>
@@ -35,7 +35,7 @@
                 <span id="ownerName"></span>
                 </p>
             </div>
-            <div>
+            <div class="innerContainer">
                 <p>
                 <span class="label">Vechicle Model:</span>
                 <span id="vehicleModel"></span>
@@ -47,7 +47,7 @@
             </div>
         </div>
         <div class="canvas-video-container">
-            <video id="videoFeed" autoplay playsinline></video>
+            <video id="videoFeed" autoplay playsinline ></video>
             <canvas id="capturedCanvas" style="display: none;"></canvas>
         </div>
     </main>
