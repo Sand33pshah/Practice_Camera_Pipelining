@@ -1,68 +1,83 @@
 # Practice Camera Pipelining
 
-Welcome to **Practice_Camera_Pipelining**! This repository is dedicated to the exploration and practical implementation of camera imaging pipelines. It is designed for students, enthusiasts, and professionals who want hands-on experience with the essential stages of digital image processing as performed in modern cameras.
+This project is a full-stack web app for real-time vehicle license plate recognition and information retrieval.
 
-## What is Camera Pipelining?
+## What does it do?
 
-A camera imaging pipeline refers to the sequence of processing steps that raw sensor data undergoes to become a final, visually appealing image. This typically includes operations such as:
-
-- **Demosaicing** (reconstructing full-color images from sensor data)
-- **White balancing**
-- **Color correction**
-- **Denoising**
-- **Sharpening**
-- **Gamma correction**
-- **Image compression**
-
-Understanding these steps is crucial for anyone interested in computer vision, digital photography, or image processing.
-
-## What Will You Find in This Repository?
-
-This repo provides:
-
-- **Implementation of Key Camera Pipeline Stages**  
-  Python (and possibly other languages) code for major pipeline steps, with clear, modular functions and explanations.
-
-- **Sample Raw Images and Test Data**  
-  Example raw sensor images (or links to datasets) to use for testing and experimentation.
-
-- **Step-by-Step Tutorials & Notebooks**  
-  Jupyter Notebooks and markdown guides walking you through each pipeline stage, with visualizations of results.
-
-- **Reference Material**  
-  Resources, articles, and further reading for deeper understanding of camera pipelines.
-
-- **Practice Tasks & Challenges**  
-  Exercises for you to implement and improve upon pipeline components.
-
-## Who Is This For?
-
-- **Students and learners** in image processing or computer vision
-- **Photographers and hobbyists** curious about how camera images are formed
-- **Engineers and developers** wanting to prototype or test camera algorithms
-
-## Getting Started
-
-1. **Clone the repository:**  
-   ```bash
-   git clone https://github.com/Sand33pshah/Practice_Camera_Pipelining.git
-   cd Practice_Camera_Pipelining
-   ```
-
-2. **Install dependencies:**  
-   Most code will use standard Python libraries (`numpy`, `opencv-python`, `matplotlib`).  
-   You can install these via:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Run the tutorials or scripts:**  
-   Open the Jupyter notebooks or run the Python scripts in the repo to start experimenting.
-
-## Contributing
-
-Pull requests and suggestions are welcome! If you have improvements or new pipeline stages to add, feel free to contribute.
+- **Lets you access your camera via the browser**
+- **Captures images and detects license plate text using image processing and OCR**
+- **Fetches vehicle information from an API based on the detected plate**
 
 ---
 
-**Explore, experiment, and understand how cameras turn light into beautiful images!**
+## Key Parts of the Code
+
+### 1. How the Camera is Accessed
+
+The frontend uses JavaScript to access your camera and display the live feed:
+
+```javascript
+const videoFeed = document.getElementById('videoFeed');
+let stream = null;
+
+startCameraButton.addEventListener('click', async () => {
+    stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    videoFeed.srcObject = stream;
+    // Enable capture button etc.
+});
+```
+
+You can capture a frame, which gets drawn to a canvas and sent to the backend for processing.
+
+### 2. How Text is Detected from the Image
+
+The backend receives the captured image and uses OpenCV and EasyOCR to find and read text on the license plate:
+
+```python
+# Decode image and convert to grayscale
+gray = cv2.cvtColor(image_np, cv2.COLOR_BGR2GRAY)
+bfilter = cv2.bilateralFilter(gray, 11, 17, 17)
+edge = cv2.Canny(bfilter, 30, 200)
+
+# Find contours for license plate
+keypoints = cv2.findContours(edge.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+contours = imutils.grab_contours(keypoints)
+contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
+
+for contour in contours:
+    approx = cv2.approxPolyDP(contour, 10, True)
+    if len(approx) == 4:
+        location = approx
+        break
+
+# Crop and OCR
+cropped_image = gray[x1: x2+1, y1:y2+1]
+reader = easyocr.Reader(['en'], gpu=False)
+result = reader.readtext(cropped_image)
+detected_text = [res[1] for res in result]
+```
+
+### 3. How the API is Called for Vehicle Info
+
+After extracting the license plate text, the backend queries an API for vehicle details:
+
+```python
+def get_User_Info(license_plate_texts):
+    cleaned_text = re.sub(r'[^a-zA-Z0-9]', '', license_plate_texts[0])
+    license_plate = cleaned_text.upper()
+    api_url = f"http://127.0.0.1:5001/api/vehicles/{license_plate}"  
+    api_key = "your_secret_api_key_here"
+    headers = { "x-api-key": api_key }
+    response = requests.get(api_url, headers=headers)
+    # Parse and return vehicle info from API response
+```
+
+## What you get
+
+- **Frontend**: Web UI to interact with the camera, capture images, and view results.
+- **Backend**: Python code for image processing, OCR, and API integration.
+- **A working demo of building a license plate recognition system with real-time lookup.**
+
+---
+
+**Feel free to explore the code and try it out with your own camera and images!**
